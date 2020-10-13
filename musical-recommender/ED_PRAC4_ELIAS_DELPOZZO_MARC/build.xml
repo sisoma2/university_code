@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- heu de substituir el project name per "ED_PRACX_COGNOM1_COGNOM2_NOM" amb 
+	 les vostres dades on X es el numero de la practica -->
+<project name="ED_PRACX_COGNOM1_COGNOM2_NOM" default="compile" basedir=".">
+	<property name="src" location="src" description="dir for java files"/>
+	<property name="bin" location="bin" description="dir for class files"/>
+	<property name="lib" location="lib" description="dir for library jar files"/>
+	<property name="doc" location="doc" description="dir for documentation and javadoc files"/>
+	<property name="javadoc" location="doc/javadoc" description="dir for javadoc files"/>
+	<property name="xml" location="xml" description="dir for xml files"/>
+	
+	<fileset id="lib.jars" dir="${lib}">
+		<include name="**/*.jar"/>
+	</fileset>
+
+	<path id="compile.path">
+		<fileset refid="lib.jars"/>
+	</path>
+	
+	<target name="clean" description="Remove the bin folder of class files and javadoc files">
+		<delete dir="${bin}"/>
+	</target>
+
+	<target name="compile" description="Compile the source files">
+		<mkdir dir="${bin}"/>
+		<javac srcdir="${src}" destdir="${bin}" includeAntRuntime="no" classpathref="compile.path"/>
+	</target>
+	
+	<target name="javadoc clean" description="Make javadoc documentation">
+		<delete dir="${javadoc}"/>
+	</target>
+	
+	<target name="javadoc" description="Make javadoc documentation">
+		<delete dir="${javadoc}"/>
+    	<javadoc access="public" destdir="${javadoc}" author="true" version="true" use="true" windowtitle="ed.api" classpathref="compile.path">
+        	<fileset dir="${src}" defaultexcludes="yes">
+            	<include name="**/*.java"/>
+        	</fileset>
+    	</javadoc>
+	</target>
+
+	<target name="run file" description="run main with filename argument" depends="compile">
+		<java classname="Main" fork="true" failonerror="true" >
+			<arg value="-f" />
+			<!-- Heu de substituir l'arxiu de proves a la carpeta xml, s'ha de
+				 conservar el mateix Data.xml -->
+			<arg value="${xml}/Data.xml" />
+			<classpath>
+				<path refid="compile.path" />
+				<pathelement location="${bin}" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="run help" description="run main" depends="compile">
+		<java classname="Main" fork="true" failonerror="true" >
+			<arg value="-h" />
+			<classpath>
+				<path refid="compile.path" />
+				<pathelement location="${bin}" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="run" description="run main" depends="compile">
+		<java classname="Main" fork="true" failonerror="true" >
+			<classpath>
+				<path refid="compile.path" />
+				<pathelement location="${bin}" />
+			</classpath>
+		</java>
+	</target>
+
+</project>
